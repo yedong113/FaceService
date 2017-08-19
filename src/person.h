@@ -15,6 +15,7 @@ typedef boost::shared_ptr<PersonBasemap >PersonBasemapPtr;
 class PersonBasemap
 {
 public:
+    PersonBasemap():feat(NULL){}
     PersonBasemap(const std::string & pid,const std::string &w_path):person_id(pid),web_path(w_path),feat(NULL){}
     ~PersonBasemap()
     {
@@ -28,6 +29,7 @@ public:
     float       * feat;
     std::string   web_path;    //web保存底图路径
     std::string   path;        //本地保存底图路径
+    bool          is_features;
 };
 
 

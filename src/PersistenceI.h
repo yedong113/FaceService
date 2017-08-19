@@ -8,8 +8,13 @@
 #include "person.h"
 
 #include <list>
+#include <vector>
 #include <cppconn/connection.h>
+#include <mysql_driver.h>
 
+#include "camera.h"
+
+#include "config.h"
 
 struct DBInfo
 {
@@ -29,7 +34,12 @@ public:
 
 public:
     sql::Connection * getConnect();
+    bool readCamera();
+    bool readPersonBasemap();
+    bool readConfig();
 private:
+    std::vector<ConfigPtr >      vectorConfig;
+    std::vector<CameraPtr> listCamera;
     std::list<PersonBasemapPtr > listPersonBasemap;
     DBInfo db_info;
 };

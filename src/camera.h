@@ -8,11 +8,13 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
+struct Camera;
+typedef boost::shared_ptr<Camera >CameraPtr;
 
-
-struct camera
+struct Camera
 {
-
+    int camera_id;
+    std::string rtsp_stream;
 };
 
 
