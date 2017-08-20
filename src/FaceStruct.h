@@ -23,6 +23,11 @@ typedef unsigned int uint32_t;
 #include <vector>
 
 #include <boost/shared_ptr.hpp>
+#include <VIPLMoreStruct.h>
+
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
 
 typedef struct
 {
@@ -175,13 +180,6 @@ typedef float* FaceFeatures;
 typedef struct CompareResult
 {
     std::string   person_id;
-    std::string   web_url;
-    std::string   certificate_no;//证件编号
-    std::string   name;//姓名
-    int           organization_id;//组织架构ID
-    std::string   organization_name;
-    int           person_type; //人员类型
-    std::string   person_type_name;//人员类型名称
     float         sources;
 }CompareResult;
 
@@ -222,5 +220,41 @@ typedef boost::shared_ptr<IFFacePosFeat > IFFacePosFeatPtr;
 typedef std::vector<IFFacePosFeatPtr > SequenceFacePosFeat;
 
 
+/*!
+ * \class classname
+ *
+ * \brief 图像中单个人脸的识别结果
+ *
+ * \author yedong
+ * \date 八月 2017
+ */
+struct FaceRecognitionResult
+{
+    IFFacePosFeatPtr faceposfeat;//人脸位置以及特征值
+    SequenceSingleFaceRecogntionResult compResult;//识别结果
+};
 
+
+
+typedef boost::shared_ptr<FaceRecognitionResult > FaceRecognitionResultPtr;
+//图像中所有人脸的识别结果
+typedef std::vector<FaceRecognitionResultPtr > SequenceFaceRecognitionResult;
+
+
+
+struct FaceServiceRequest
+{
+    FaceServiceRequest(const cv::Mat &im) : srcImg(im) {}
+
+    int camera_id;
+    std::string capture_time;
+    cv::Mat srcImg;
+    std::vector<VIPLTrackingInfo > faces;//人脸追踪检测到的人脸集合
+
+    SequenceFacePosFeat seqFaceFosFeat;
+    SequenceFaceRecognitionResult seqFaceRecogntionResult;
+
+};
+
+typedef boost::shared_ptr<FaceServiceRequest >FaceServiceRequestPtr;
 #endif //FACESERVICE_FACESTRUCT_H

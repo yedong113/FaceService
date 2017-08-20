@@ -26,12 +26,16 @@ public:
                         const std::string &qaModelPath);
     ~VIPLFaceRecognition(){}
 
+    int setMinFaceSize(int facesize);
+
 public:
     ////提取人脸追踪的检测到的人脸特征值
     int imageFeat(const std::string &token,const  cv::Mat &im, VIPLTrackingInfo face,SequenceFacePosFeat & seqfaceposfeat);
     VIPLImageData vipl_convert(const cv::Mat &img);
 
     int imageFeat(const std::string &token, const cv::Mat &srcImg, IFFacePosFeat & faceposfeat);
+
+    float calcSimilarity(FaceFeatures feat1,FaceFeatures feat2);
 private:
     VIPLFaceDetector   *detector;
     VIPLFaceRecognizer *face_recognizer;

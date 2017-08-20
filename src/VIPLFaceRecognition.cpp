@@ -4,18 +4,85 @@
 
 #include "VIPLFaceRecognition.h"
 
+#include "UserInclude.h"
+boost::mutex modelMutex;
+
+VIPLFaceDetector * getVIPLFaceDetector(const std::string & modelPath)
+{
+    SCOPED_LOCK lock(modelMutex);
+//	VIPLFaceDetector *faceDetector = new VIPLFaceDetector("model\\VIPLFaceDetector5.0.0.dat");
+    VIPLFaceDetector *faceDetector = new VIPLFaceDetector(modelPath.c_str());
+    faceDetector->SetMinFaceSize(60);								// 设置可检测的最小人脸大小（默认为20）
+    faceDetector->SetScoreThresh(0.62, 0.47, 0.985);
+    faceDetector->SetImagePyramidScaleFactor(1.414);
+
+    return faceDetector;
+}
+
+VIPLFaceRecognizer * getVIPLFaceRecognizer(const std::string & modelPath)
+{
+    SCOPED_LOCK lock(modelMutex);
+// 	VIPLFaceRecognizer * faceRecognizer = new VIPLFaceRecognizer("model/VIPLFaceRecognizer5.0.RN2.ext.dat");
+    VIPLFaceRecognizer * faceRecognizer = new VIPLFaceRecognizer(modelPath.c_str());
+    //faceRecognizer->AddModel("model/VIPLFaceRecognizer5.0.RN2.ext.dat");
+    int feat_size = faceRecognizer->GetFeatureSize();
+    return faceRecognizer;
+}
+VIPLFaceRecognizer * getDoubleModelVIPLFaceRecognizer(const std::string & modelPath1, const std::string &modelPath2)
+{
+    SCOPED_LOCK lock(modelMutex);
+    // 	VIPLFaceRecognizer * faceRecognizer = new VIPLFaceRecognizer("model/VIPLFaceRecognizer5.0.RN2.ext.dat");
+    VIPLFaceRecognizer * faceRecognizer = new VIPLFaceRecognizer(modelPath1.c_str());
+    faceRecognizer->AddModel(modelPath2.c_str());
+    return faceRecognizer;
+}
+
+
+
+VIPLPointDetector *getVIPLPointDetector(const std::string & modelPath)
+{
+    SCOPED_LOCK lock(modelMutex);
+//	VIPLPointDetector * point_detector = new VIPLPointDetector("model/VIPLPointDetector4.0.3.dat");
+    VIPLPointDetector * point_detector = new VIPLPointDetector(modelPath.c_str());
+    return point_detector;
+
+}
+
+VIPLQualityAssessment *getVIPLQualityAssessment(const std::string &modelPath)
+{
+    SCOPED_LOCK lock(modelMutex);
+    VIPLQualityAssessment *QA = new VIPLQualityAssessment(modelPath.c_str(),60);
+    return QA;
+}
+
+
+
 
 VIPLFaceRecognition::VIPLFaceRecognition(const std::string &modelPath1, const std::string &modelPath2,
                                          const std::string &modelPath3, const std::string &modelPath4)
 {
-
+    detector = getVIPLFaceDetector(modelPath1);
+    std::cout << "load " << modelPath1 << " successful" << std::endl;
+    point_detector = getVIPLPointDetector(modelPath2);
+    std::cout << "load " << modelPath2 << " successful" << std::endl;
+    face_recognizer = getVIPLFaceRecognizer(modelPath3);
+    std::cout << "load " << modelPath3 << " successful" << std::endl;
+    QA = getVIPLQualityAssessment(modelPath4);
+    std::cout << "load " << modelPath4 << " successful" << std::endl;
 }
 
 VIPLFaceRecognition::VIPLFaceRecognition(const std::string &detectorModelPath, const std::string &pointDetectModelPath,
                                          const std::string &faceRecognizerModel1,
                                          const std::string &faceRecognizerModel2, const std::string &qaModelPath)
 {
-
+    detector = getVIPLFaceDetector(detectorModelPath);
+    std::cout << "load " << detectorModelPath << "successful" << std::endl;
+    point_detector = getVIPLPointDetector(pointDetectModelPath);
+    std::cout << "load " << pointDetectModelPath << "successful" << std::endl;
+    face_recognizer = getDoubleModelVIPLFaceRecognizer(faceRecognizerModel1, faceRecognizerModel2);
+    std::cout << "load " << faceRecognizerModel1 << "successful" << std::endl;
+    QA = getVIPLQualityAssessment(qaModelPath);
+    std::cout << "load " << qaModelPath << "successful" << std::endl;
 }
 
 
@@ -180,6 +247,15 @@ int VIPLFaceRecognition::imageFeat(const std::string &token, const cv::Mat &srcI
         face_recognizer->ExtractFeature(dstImgData, faceposfeat.feat);
     }
     return faceNum;
+}
+
+float VIPLFaceRecognition::calcSimilarity(FaceFeatures feat1, FaceFeatures feat2) {
+    return face_recognizer->CalcSimilarity(feat1,feat2);
+}
+
+int VIPLFaceRecognition::setMinFaceSize(int facesize) {
+    detector->SetMinFaceSize(facesize);
+    return facesize;
 }
 
 

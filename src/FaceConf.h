@@ -30,7 +30,7 @@ public:
     std::string   base_url;
     float         comp_source;
     double        scale;
-    double        face_scale;
+    double        face_scale;//脸部存储缩放比例
     float         factor;
     float         thresh;
     int           step;

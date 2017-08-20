@@ -26,6 +26,9 @@ struct DBInfo
 };
 
 
+/*
+ * 持久化存储类 
+ * */
 class PersistenceI {
 
 public:
@@ -37,12 +40,16 @@ public:
     bool readCamera();
     bool readPersonBasemap();
     bool readConfig();
+
+public:
+    const std::list<PersonBasemapPtr > & getListPersonBasemap(){return listPersonBasemap;}
 private:
     std::vector<ConfigPtr >      vectorConfig;
     std::vector<CameraPtr> listCamera;
     std::list<PersonBasemapPtr > listPersonBasemap;
     DBInfo db_info;
 };
+typedef boost::detail::thread::singleton<PersistenceI > PersistenceISingle;
 
 
 #endif

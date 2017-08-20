@@ -31,7 +31,7 @@ link_directories(
 
 set(SOURCE_FILES main.cpp src/PersistenceI.cpp src/PersistenceI.h src/person.h
         src/camera.h src/ConfigManager.cpp src/ConfigManager.h src/UserInclude.h
-        main.cpp src/config.h src/FaceConf.cpp src/FaceConf.h src/VIPLFaceRecognition.cpp src/VIPLFaceRecognition.h src/FaceStruct.h src/QueueCondition.h)
+        main.cpp src/config.h src/FaceConf.cpp src/FaceConf.h src/VIPLFaceRecognition.cpp src/VIPLFaceRecognition.h src/FaceStruct.h src/QueueCondition.h src/FaceRecogntionIBase.cpp src/FaceRecogntionIBase.h)
 
 
 add_executable(FaceService ${SOURCE_FILES})
