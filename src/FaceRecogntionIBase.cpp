@@ -5,7 +5,7 @@
 #include "FaceRecogntionIBase.h"
 
 #include "PersistenceI.h"
-
+#include "FaceConf.h"
 
 int FaceRecogntionIBase::procExteact(VIPLFaceRecognition *faceRecognition)
 {
@@ -68,8 +68,67 @@ int FaceRecogntionIBase::calcSimilarity(IFFacePosFeatPtr faceposfeat, VIPLFaceRe
         }
 
     }
+
     std::sort(vec_t.begin(), vec_t.end(), compare_result);
-    for
+    int flag=0;
+    for(auto &ptr:vec_t)
+    {
+        int flag1 = 0;
+        for(auto &ptr1:v)
+        {
+            if (ptr1->person_id == ptr->person_id)
+            {
+                flag1++;
+                break;
+            }
+        }
+
+        if (!flag1)
+        {
+            v.push_back(ptr);
+        }
+
+        if (v.size() >= 10)
+        {
+            break;
+        }
+        if (flag == 0)
+        {
+            flag++;
+        }
+    }
+
+    if (max_score>FACECONFI.openDoorScore)
+    {
+        if (FACECONFI.openAccessControl)//是否要打开门禁设备
+        {
+            printf("opendoor score=%0.2f  opendoorsource=%f\n", max_score, FACECONFI.openDoorScore);
+        }
+        addFaceID2IdentifiedSet(faceposfeat->faceId);
+    }
 
     return 0;
 }
+
+
+
+bool FaceRecogntionIBase::faceIdIdentified(int faceID)
+{
+    bool bRet = false;
+    SCOPED_LOCK lock(mutexIdentifiedSet);
+    auto pos = IdentifiedSet.find(faceID);
+    if (pos!=IdentifiedSet.end())
+    {
+        bRet = true;
+    }
+    return bRet;
+}
+
+void FaceRecogntionIBase::addFaceID2IdentifiedSet(int faceID)
+{
+    SCOPED_LOCK lock(mutexIdentifiedSet);
+    IdentifiedSet.insert(faceID);
+}
+
+
+

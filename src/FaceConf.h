@@ -8,6 +8,8 @@
 #include <string>
 using namespace  std;
 
+#include "UserInclude.h"
+
 
 #include "config.h"
 
@@ -42,5 +44,9 @@ public:
     std::string   accessControlSignal;
 };
 
+
+typedef boost::detail::thread::singleton<FaceConf > FaceConfSingle;
+
+#define FACECONFI FaceConfSingle::instance()
 
 #endif //FACESERVICE_FACECONF_H

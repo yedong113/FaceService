@@ -16,6 +16,7 @@ include_directories(/usr/local/VIPL_SDK/FaceTracking//include)
 include_directories(/usr/local/VIPL_SDK/PointDetector/include)
 include_directories(/usr/local/VIPL_SDK/PoseEstimation//include)
 include_directories(/usr/local/VIPL_SDK/QualityAssessment/include)
+include_directories(/usr/local/VIPL_SDK/curl-7.49/include)
 include_directories(./src)
 
 
@@ -26,12 +27,13 @@ link_directories(
         /usr/local/libvlc/lib
         /usr/local/mysql/lib
         /usr/local/VIPL_SDK/lib
+        /usr/local/curl-7.49/lib
 )
 
 
 set(SOURCE_FILES main.cpp src/PersistenceI.cpp src/PersistenceI.h src/person.h
         src/camera.h src/ConfigManager.cpp src/ConfigManager.h src/UserInclude.h
-        main.cpp src/config.h src/FaceConf.cpp src/FaceConf.h src/VIPLFaceRecognition.cpp src/VIPLFaceRecognition.h src/FaceStruct.h src/QueueCondition.h src/FaceRecogntionIBase.cpp src/FaceRecogntionIBase.h)
+        main.cpp src/config.h src/FaceConf.cpp src/FaceConf.h src/VIPLFaceRecognition.cpp src/VIPLFaceRecognition.h src/FaceStruct.h src/QueueCondition.h src/FaceRecogntionIBase.cpp src/FaceRecogntionIBase.h src/FaceUploadResult.cpp src/FaceUploadResult.h src/ZBase64.cpp src/ZBase64.h src/public.cpp src/public.h)
 
 
 add_executable(FaceService ${SOURCE_FILES})
@@ -51,6 +53,7 @@ target_link_libraries(${PROJECT_NAME} -lopencv_highgui
         -lVIPLPoseEstimation100
         -lVIPLQualityAssessment210
         -lVIPLFaceRecognizerMaster
+        -lcurl
         )
 
 

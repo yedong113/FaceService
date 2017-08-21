@@ -51,5 +51,7 @@ private:
 };
 typedef boost::detail::thread::singleton<PersistenceI > PersistenceISingle;
 
+#define PERSISTENCEI PersistenceISingle::instance()
+
 
 #endif
